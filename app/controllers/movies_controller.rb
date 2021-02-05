@@ -42,7 +42,10 @@ class MoviesController < ApplicationController
     else
 	    @movies = Movie.with_ratings(@ratings_to_show)
     end
-
+    if session[:checkedin] == nil
+            @ratings_to_show = Movie.all_ratings
+	    session[:checkedin] = 1
+    end
     @all_ratings = Movie.all_ratings
     
     if params[:sort] != nil
