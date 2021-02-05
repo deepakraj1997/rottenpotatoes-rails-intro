@@ -10,17 +10,33 @@ class MoviesController < ApplicationController
     @movies = Movie.all
     @ratings_to_show = []
     @sort = nil
+    if session[:ratings] != nil
+	    @ratings_to_show = session[:ratings]
+    end
+
+    if session[:sort] != nil
+	    @sort = session[:sort]
+    end
+
     if params[:ratings] != nil
 	    @ratings_to_show = params[:ratings].keys
 	    @movies = Movie.with_ratings(@ratings_to_show)
+    else @ratings_to_show.length != 0
+	@ratings_to_show = []
     end
+    
     @all_ratings = Movie.all_ratings
+    
     if params[:sort] != nil
 	    @sort = params[:sort]
     end
-    if !@sort.nil?
-	    @movies = Movie.order("#{@sort} ASC")
+    
+    if @sort != nil
+	    @movies = @movies.order("#{@sort} ASC")
     end
+    
+    session[:sort] = @sort
+    session[:ratings] = @ratings_to_show
   end
 
   def new
