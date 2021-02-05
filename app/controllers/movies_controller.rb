@@ -7,12 +7,21 @@ class MoviesController < ApplicationController
   end
 
   def index
+    #session.clear  
     @movies = Movie.all
     @ratings_to_show = []
     @sort = nil
+    
     if session[:ratings] != nil
 	    @ratings_to_show = session[:ratings]
     end
+
+    @page = params[:page]
+    #if @page != nil and session[:page] != nil
+    #        @page = session[:page]
+    #elsif @page == nil and session[:page] != nil
+    #	session[:page] = nil
+    #end
 
     if session[:sort] != nil
 	    @sort = session[:sort]
@@ -21,10 +30,12 @@ class MoviesController < ApplicationController
     if params[:ratings] != nil
 	    @ratings_to_show = params[:ratings].keys
 	    @movies = Movie.with_ratings(@ratings_to_show)
-    else @ratings_to_show.length != 0
-	@ratings_to_show = []
+    elsif @page == nil
+    	    @ratings_to_show = []
+    else
+	    @movies = Movie.with_ratings(@ratings_to_show)
     end
-    
+
     @all_ratings = Movie.all_ratings
     
     if params[:sort] != nil
