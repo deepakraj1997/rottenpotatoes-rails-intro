@@ -9,11 +9,18 @@ class MoviesController < ApplicationController
   def index
     @movies = Movie.all
     @ratings_to_show = []
+    @sort = nil
     if params[:ratings] != nil
 	    @ratings_to_show = params[:ratings].keys
 	    @movies = Movie.with_ratings(@ratings_to_show)
     end
     @all_ratings = Movie.all_ratings
+    if params[:sort] != nil
+	    @sort = params[:sort]
+    end
+    if !@sort.nil?
+	    @movies = Movie.order("#{@sort} ASC")
+    end
   end
 
   def new
